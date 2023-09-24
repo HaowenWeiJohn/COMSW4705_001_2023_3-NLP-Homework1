@@ -112,6 +112,8 @@ class TrigramModel(object):
                 else:
                     self.trigramcounts[ngram] = 1
 
+        self.total_number_of_tokens = sum(self.unigramcounts.values())
+
         return
 
     def raw_trigram_probability(self, trigram):
@@ -119,10 +121,11 @@ class TrigramModel(object):
         COMPLETE THIS METHOD (PART 3)
         Returns the raw (unsmoothed) trigram probability
         """
+        if trigram in self.trigramcounts:
+            return self.trigramcounts[trigram]/self.bigramcounts[(trigram[0], trigram[1])]
+        else:
+            return self.raw_unigram_probability((trigram[-1],))
 
-
-
-        return 0.0
 
     def raw_bigram_probability(self, bigram):
         """
@@ -131,8 +134,12 @@ class TrigramModel(object):
         """
 
 
+        if bigram in self.bigramcounts:
+            return self.bigramcounts[bigram]/self.unigramcounts[(bigram[0],)]
+        else:
+            return 0.0
 
-        return 0.0
+
 
     def raw_unigram_probability(self, unigram):
         """
@@ -144,9 +151,10 @@ class TrigramModel(object):
         # can be slow! You might want to compute the total number of words once,
         # store in the TrigramModel instance, and then re-use it.
 
-
-
-        return 0.0
+        if unigram in self.unigramcounts:
+            return self.unigramcounts[unigram]/self.total_number_of_tokens
+        else:
+            return 0.0
 
     def generate_sentence(self, t=20):
         """
@@ -192,4 +200,6 @@ model.unigramcounts[('the',)]
 
 # complete the generate_sentence
 
-
+model.raw_unigram_probability(('the',))
+model.raw_bigram_probability(('START','the'))
+model.raw_trigram_probability(('START','START','the'))
