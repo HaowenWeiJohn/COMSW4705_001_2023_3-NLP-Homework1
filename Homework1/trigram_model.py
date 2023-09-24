@@ -77,9 +77,9 @@ class TrigramModel(object):
         self.trigramcounts = {}
 
         ##Your code here
-
+        self.total_number_of_sentences = 0
         for sentence in corpus:
-
+            self.total_number_of_sentences += 1
             for ngram in get_ngrams(sentence, 1):
                 if ngram in self.unigramcounts:
                     self.unigramcounts[ngram] += 1
@@ -112,6 +112,11 @@ class TrigramModel(object):
         c_uv = 0
         if trigram in self.trigramcounts:
             c_uvw = self.trigramcounts[trigram]
+
+        # checkif the trigram[0:2] is ('START', 'START')
+        if trigram[0:2] == ('START', 'START'):
+            c_uv = self.total_number_of_sentences
+
         if trigram[0:2] in self.bigramcounts:
             c_uv = self.bigramcounts[trigram[0:2]]
 
