@@ -36,7 +36,17 @@ def get_ngrams(sequence, n):
     This should work for arbitrary values of n >= 1 
     """
 
-    return []
+    sequence_pad = ["START"] + sequence + ["STOP"]
+    if n > 2:
+        sequence_pad = ["START"]*(n-2) + sequence_pad
+
+    ngrams = []
+    for i in range(len(sequence_pad)-n+1):
+        ngrams.append(tuple(sequence_pad[i:i+n]))
+
+
+
+    return ngrams
 
 
 class TrigramModel(object):

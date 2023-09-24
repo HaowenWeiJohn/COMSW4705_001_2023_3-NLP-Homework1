@@ -1,5 +1,5 @@
 
-
+######### Part 1 - extracting n-grams from a sentence (20 pts) #########
 def get_ngrams(sequence, n):
     """
     COMPLETE THIS FUNCTION (PART 1)
@@ -31,3 +31,4 @@ sequence = ["natural","language","processing"]
 n = 3
 
 print(get_ngrams(sequence, n))
+
