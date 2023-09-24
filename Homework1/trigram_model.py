@@ -69,14 +69,34 @@ class TrigramModel(object):
         """
         COMPLETE THIS METHOD (PART 2)
         Given a corpus iterator, populate dictionaries of unigram, bigram,
-        and trigram counts. 
+        and trigram counts.
         """
-   
-        self.unigramcounts = {} # might want to use defaultdict or Counter instead
-        self.bigramcounts = {} 
-        self.trigramcounts = {} 
+
+        self.unigramcounts = {}  # might want to use defaultdict or Counter instead
+        self.bigramcounts = {}
+        self.trigramcounts = {}
 
         ##Your code here
+
+        for sentence in corpus:
+
+            for ngram in get_ngrams(sentence, 1):
+                if ngram in self.unigramcounts:
+                    self.unigramcounts[ngram] += 1
+                else:
+                    self.unigramcounts[ngram] = 1
+
+            for ngram in get_ngrams(sentence, 2):
+                if ngram in self.bigramcounts:
+                    self.bigramcounts[ngram] += 1
+                else:
+                    self.bigramcounts[ngram] = 1
+
+            for ngram in get_ngrams(sentence, 3):
+                if ngram in self.trigramcounts:
+                    self.trigramcounts[ngram] += 1
+                else:
+                    self.trigramcounts[ngram] = 1
 
         return
 
