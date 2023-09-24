@@ -119,6 +119,9 @@ class TrigramModel(object):
         COMPLETE THIS METHOD (PART 3)
         Returns the raw (unsmoothed) trigram probability
         """
+
+
+
         return 0.0
 
     def raw_bigram_probability(self, bigram):
@@ -126,6 +129,9 @@ class TrigramModel(object):
         COMPLETE THIS METHOD (PART 3)
         Returns the raw (unsmoothed) bigram probability
         """
+
+
+
         return 0.0
 
     def raw_unigram_probability(self, unigram):
@@ -137,6 +143,9 @@ class TrigramModel(object):
         # hint: recomputing the denominator every time the method is called
         # can be slow! You might want to compute the total number of words once,
         # store in the TrigramModel instance, and then re-use it.
+
+
+
         return 0.0
 
     def generate_sentence(self, t=20):
@@ -176,6 +185,9 @@ class TrigramModel(object):
 model = TrigramModel(corpusfile)
 
 model.trigramcounts[('START','START','the')]
+model.bigramcounts[('START','the')]
+model.unigramcounts[('the',)]
 
+######### Part 3 - Raw n-gram probabilities (15 pts) #########
 
-        ######### Part 3 - Raw n-gram probabilities (15 pts) #########
+# complete the generate_sentence
