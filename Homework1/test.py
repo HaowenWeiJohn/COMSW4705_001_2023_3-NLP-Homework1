@@ -121,10 +121,20 @@ class TrigramModel(object):
         COMPLETE THIS METHOD (PART 3)
         Returns the raw (unsmoothed) trigram probability
         """
+
+        c_uvw = 0
+        c_uv = 0
         if trigram in self.trigramcounts:
-            return self.trigramcounts[trigram]/self.bigramcounts[(trigram[0], trigram[1])]
+            c_uvw = self.trigramcounts[trigram]
+        if trigram[0:2] in self.bigramcounts:
+            c_uv = self.bigramcounts[trigram[0:2]]
+
+        if c_uv == 0:
+            return self.raw_unigram_probability((trigram[-1],)) # return unigram probability of the last word in trigram if trigram not in trigramcounts
         else:
-            return self.raw_unigram_probability((trigram[-1],))
+            return c_uvw/c_uv
+
+
 
 
     def raw_bigram_probability(self, bigram):
@@ -133,11 +143,20 @@ class TrigramModel(object):
         Returns the raw (unsmoothed) bigram probability
         """
 
+        c_uw = 0
+        c_u = 0
 
         if bigram in self.bigramcounts:
-            return self.bigramcounts[bigram]/self.unigramcounts[(bigram[0],)]
+            c_uw = self.bigramcounts[bigram]
+        if bigram[0] in self.unigramcounts:
+            c_u = self.unigramcounts[bigram[0]]
+
+        if c_u == 0:
+            return self.raw_unigram_probability((bigram[-1],))
         else:
-            return 0.0
+            return c_uw/c_u
+
+
 
 
 
@@ -172,7 +191,10 @@ class TrigramModel(object):
         lambda1 = 1 / 3.0
         lambda2 = 1 / 3.0
         lambda3 = 1 / 3.0
-        return 0.0
+
+        p = lambda1 * self.raw_trigram_probability(trigram) + lambda2 * self.raw_bigram_probability(trigram[1:]) + lambda3 * self.raw_unigram_probability(trigram[2:])
+
+        return p
 
     def sentence_logprob(self, sentence):
         """
@@ -203,3 +225,7 @@ model.unigramcounts[('the',)]
 model.raw_unigram_probability(('the',))
 model.raw_bigram_probability(('START','the'))
 model.raw_trigram_probability(('START','START','the'))
+
+model.smoothed_trigram_probability(('START','i','am'))
+
+
