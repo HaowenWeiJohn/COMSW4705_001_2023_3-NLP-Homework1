@@ -98,6 +98,10 @@ class TrigramModel(object):
                 else:
                     self.trigramcounts[ngram] = 1
 
+        # remove "START" from unigramcounts
+        if ("START",) in self.unigramcounts:
+            del self.unigramcounts[("START",)]
+
         self.total_number_of_tokens = sum(self.unigramcounts.values())
 
         return
