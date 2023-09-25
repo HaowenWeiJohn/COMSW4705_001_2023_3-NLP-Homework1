@@ -207,9 +207,16 @@ class TrigramModel(object):
         Returns the log probability of an entire sequence.
         """
 
+        log_prob = 0.0
 
+        # sentence is a list of tokens
+        for i in range(2, len(sentence) - 1):
 
-        return float("-inf")
+            trigram = (sentence[i - 2], sentence[i - 1], sentence[i])
+            trigram_prob = self.smoothed_trigram_probability(trigram)
+            log_prob += math.log(trigram_prob, 2)
+
+        return log_prob # return log probability of sentence
 
     def perplexity(self, corpus):
         """
