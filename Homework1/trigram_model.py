@@ -197,7 +197,7 @@ class TrigramModel(object):
 
             trigram = (sentence[i - 2], sentence[i - 1], sentence[i])
             trigram_prob = self.smoothed_trigram_probability(trigram)
-            log_prob += math.log(trigram_prob, 2)
+            log_prob += math.log2(trigram_prob)
 
         return log_prob # return log probability of sentence
 
