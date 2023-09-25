@@ -115,15 +115,16 @@ class TrigramModel(object):
 
         c_uvw = 0
         c_uv = 0
+
+
         if trigram in self.trigramcounts:
             c_uvw = self.trigramcounts[trigram]
 
-        # checkif the trigram[0:2] is ('START', 'START')
-        if trigram[0:2] == ('START', 'START'):
-            c_uv = self.total_number_of_sentences
 
         if trigram[0:2] in self.bigramcounts:
             c_uv = self.bigramcounts[trigram[0:2]]
+        elif trigram[0:2] == ('START', 'START'): # based on the ED discussion, we should consider the case when trigram[0:2] is ('START', 'START') and set c_uv = total_number_of_sentences
+            c_uv = self.total_number_of_sentences
 
         if c_uv == 0:
             return 1/len(self.lexicon)
@@ -143,11 +144,14 @@ class TrigramModel(object):
         c_uw = 0
         c_u = 0
 
-
         if bigram in self.bigramcounts:
             c_uw = self.bigramcounts[bigram]
+
         if bigram[0:1] in self.unigramcounts:
             c_u = self.unigramcounts[bigram[0:1]]
+        elif bigram[0:1] == ('START',): # based on the ED discussion, we should consider the case when bigram[0:1] is ('START',) and set c_u = total_number_of_sentences
+            c_u = self.total_number_of_sentences
+
 
         if c_u == 0:
             return self.raw_unigram_probability((bigram[-1],))
