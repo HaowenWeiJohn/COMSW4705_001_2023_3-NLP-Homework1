@@ -131,3 +131,5 @@ if __name__ == "__main__":
         grammar = Pcfg(grammar_file) 
         parser = CkyParser(grammar)
         evaluate_parser(parser,test_file)
+
+    # Coverage: 67.24%, Average F-score (parsed sentences): 0.9504475408614075, Average F-score (all sentences): 0.6390940360964636
