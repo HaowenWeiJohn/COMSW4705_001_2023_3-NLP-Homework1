@@ -197,7 +197,7 @@ if __name__ == "__main__":
 
         tree = get_tree(table, 0, len(toks), grammar.startsymbol)
 
-
+        # This is copied from the homework pdf
         tree_correct = tree == ('TOP', ('NP', ('NP', 'flights'), ('NPBAR', ('PP', ('FROM', 'from'), ('NP', 'miami')), ('PP', ('TO', 'to'), ('NP', 'cleveland')))), ('PUN', '.'))
 
         print("Tree is correct: " + str(tree_correct))
