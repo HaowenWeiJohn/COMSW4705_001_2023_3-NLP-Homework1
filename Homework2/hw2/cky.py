@@ -97,7 +97,13 @@ class CkyParser(object):
         return False
         """
         # TODO, part 2
-        return False 
+
+        table, probs = self.parse_with_backpointers(tokens)
+        start_symbol = self.grammar.startsymbol
+        if start_symbol in table[(0,len(tokens))]:
+            return True
+        else:
+            return False
        
     def parse_with_backpointers(self, tokens):
         """
@@ -106,25 +112,92 @@ class CkyParser(object):
         # TODO, part 3
         table= None
         probs = None
+
+        table = {}
+        probs = {}
+
+        # initialization
+        for i in range(len(tokens)):
+            table[(i,i+1)] = {}
+            probs[(i,i+1)] = {}
+            token = tokens[i]
+            rules = self.grammar.rhs_to_rules[(token,)]
+            for rule in rules:
+                table[(i,i+1)][rule[0]] = rule[1][0]
+                probs[(i,i+1)][rule[0]] = math.log(rule[2])
+
+
+            # table[(i,i+1)] = {}
+            # token = tokens[i]
+            # rules = self.grammar.rhs_to_rules[(token,)]
+            # for rule in rules:
+            #     table[(i,i+1)][rule[0]] = (rule[1][0],i,i+1)
+
+        # cky algorithm
+        for length in range(2, len(tokens)+1):
+            for i in range(0, len(tokens)-length+1):
+                j = i + length
+                table[(i,j)] = {}
+                probs[(i,j)] = {}
+                for k in range(i+1, j):
+                    left = (i,k)
+                    right = (k,j)
+                    # record the possible non-terminal
+                    left_nonterminal = table[left].keys()
+                    right_nonterminal = table[right].keys()
+                    for left_nt in left_nonterminal:
+                        for right_nt in right_nonterminal:
+                            rules = self.grammar.rhs_to_rules[(left_nt, right_nt)]
+                            for rule in rules:
+                                if rule[0] not in table[(i,j)]:
+                                    table[(i,j)][rule[0]] = ((left_nt, i, k), (right_nt, k, j))
+                                    probs[(i,j)][rule[0]] = math.log(rule[2]) + probs[left][left_nt] + probs[right][right_nt]
+                                else:
+                                    if probs[(i,j)][rule[0]] < math.log(rule[2]) + probs[left][left_nt] + probs[right][right_nt]:
+                                        table[(i,j)][rule[0]] = ((left_nt, i, k), (right_nt, k, j))
+                                        probs[(i,j)][rule[0]] = math.log(rule[2]) + probs[left][left_nt] + probs[right][right_nt]
+
+
         return table, probs
 
 
-def get_tree(chart, i,j,nt): 
+def get_tree(chart, i,j, nt):
     """
     Return the parse-tree rooted in non-terminal nt and covering span i,j.
     """
     # TODO: Part 4
-    return None 
- 
+
+    # find the most possible non-terminal
+
+    rule = chart[(i,j)][nt]
+
+    if isinstance(rule, str):
+        return (nt, rule)
+
+    elif isinstance(rule, tuple):
+        left_rule = rule[0]
+        right_rule = rule[1]
+        return (nt, get_tree(chart, left_rule[1], left_rule[2], left_rule[0]), get_tree(chart, right_rule[1], right_rule[2], right_rule[0]))
+
+
        
 if __name__ == "__main__":
-    
+
+    print("Testing parser:")
+
     with open('atis3.pcfg','r') as grammar_file: 
         grammar = Pcfg(grammar_file) 
         parser = CkyParser(grammar)
-        toks =['flights', 'from','miami', 'to', 'cleveland','.'] 
+        toks =['flights', 'from','miami', 'to', 'cleveland','.']
+
         #print(parser.is_in_language(toks))
-        #table,probs = parser.parse_with_backpointers(toks)
-        #assert check_table_format(chart)
-        #assert check_probs_format(probs)
-        
+        table,probs = parser.parse_with_backpointers(toks)
+        assert check_table_format(table)
+        assert check_probs_format(probs)
+
+        tree = get_tree(table, 0, len(toks), grammar.startsymbol)
+
+
+        tree_correct = tree == ('TOP', ('NP', ('NP', 'flights'), ('NPBAR', ('PP', ('FROM', 'from'), ('NP', 'miami')), ('PP', ('TO', 'to'), ('NP', 'cleveland')))), ('PUN', '.'))
+
+        print("Tree is correct: " + str(tree_correct))
