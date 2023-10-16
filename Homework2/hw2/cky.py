@@ -190,7 +190,7 @@ if __name__ == "__main__":
         parser = CkyParser(grammar)
         toks =['flights', 'from','miami', 'to', 'cleveland','.']
 
-        #print(parser.is_in_language(toks))
+        print(parser.is_in_language(toks))
         table,probs = parser.parse_with_backpointers(toks)
         assert check_table_format(table)
         assert check_probs_format(probs)
