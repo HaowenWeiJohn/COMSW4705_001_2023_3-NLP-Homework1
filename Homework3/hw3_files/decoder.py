@@ -2,7 +2,7 @@ from conll_reader import DependencyStructure, DependencyEdge, conll_reader
 from collections import defaultdict
 import copy
 import sys
-
+import tensorflow as tf
 import numpy as np
 import keras
 
@@ -66,7 +66,7 @@ class Parser(object):
                 if transition[0] == 'right_arc':
                     state.right_arc(transition[1])
 
-                print(state.stack, state.buffer, state.deps)
+                # print(state.stack, state.buffer, state.deps)
 
                 break
 
@@ -108,6 +108,8 @@ class Parser(object):
 
 
 if __name__ == "__main__":
+
+    tf.compat.v1.disable_eager_execution()
 
     WORD_VOCAB_FILE = 'data/words.vocab'
     POS_VOCAB_FILE = 'data/pos.vocab'

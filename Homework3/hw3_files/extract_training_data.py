@@ -298,9 +298,9 @@ if __name__ == "__main__":
     WORD_VOCAB_FILE = 'data/words.vocab'
     POS_VOCAB_FILE = 'data/pos.vocab'
 
-    train_conll = 'D:/HaowenWei\PycharmProjects\COMSW4705_001_2023_3-NLP-Homework1\Homework3\hw3_files\data/dev.conll'
-    input_train = 'data/input_dev.npy'
-    output_train = 'data/output_dev.npy'
+    train_conll = 'D:\HaowenWei\Rena\COMSW4705_001_2023_3-NLP-Homework1\Homework3\hw3_files\data/train.conll'
+    input_train = 'data/input_train.npy'
+    output_train = 'data/output_train.npy'
 
     try:
         word_vocab_f = open(WORD_VOCAB_FILE,'r')
