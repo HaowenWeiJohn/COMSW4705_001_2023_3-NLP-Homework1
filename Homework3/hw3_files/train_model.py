@@ -64,8 +64,8 @@ if __name__ == "__main__":
     extractor = FeatureExtractor(word_vocab_f, pos_vocab_f)
     print("Compiling model.")
     model = build_model(len(extractor.word_vocab), len(extractor.pos_vocab), len(extractor.output_labels))
-    inputs = np.load(inputs_file).astype(np.int32)
-    outputs = np.load(outputs_file).astype(np.int32)
+    inputs = np.load(inputs_file)
+    outputs = np.load(outputs_file)
     print("Done loading data.")
 
     # Now train the model

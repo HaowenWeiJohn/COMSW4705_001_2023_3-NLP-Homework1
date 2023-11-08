@@ -1,48 +1,3 @@
-#
-# Part 2 - Extracting Input/Output matrices for training (35 pts)
-# To train the neural network we first need to obtain a set of input/output training pairs. More specifically, each training example should be a pair (x,y), where x is a parser state and y is the transition the parser should make in that state.
-#
-# Take a look at the file extract_training_data.py
-# States: The input will be an instance of the class State, which represents a parser state. The attributes of this class consist of a stack, buffer, and partially built dependency structure deps. stack and buffer are lists of word ids (integers).
-# The top of the stack is the last word in the list stack[-1]. The next word on the buffer is also the last word in the list, buffer[-1].
-# Deps is a list of (parent, child, relation) triples, where parent and child are integer ids and relation is a string (the dependency label).
-#
-# Transitions: The output is a pair (transition, label), where the transition can be one of "shift", "left_arc", or "right_arc" and the label is a dependency label. If the transition is "shift", the dependency label is None. Since there are 45 dependency relations (see list deps_relations), there are 45*2+1 possible outputs.
-#
-# Obtaining oracle transitions and a sequence of input/output examples.
-# As discussed in class, we cannot observe the transitions directly from the treebank. We only see the resulting dependency structures. We therefore need to convert the trees into a sequence of (state, transition) pairs that we use for training. That part has already been implemented in the function get_training_instances(dep_structure). Given a DependencyStructure instance, this method returns a list of (State, Transition) pairs in the format described above.
-#
-# TODO: Extracting Input Representations
-# Your task will be to convert the input/output pairs into a representation suitable for the neural network. You will complete the method get_input_representation(self, words, pos, state) in the class FeatureExtractor. The constructor of the class FeatureExtractor takes the two vocabulary files as inputs (file objects). It then stores a word-to-index dictionary in the attribute word_vocab and POS-to-index dictionary in the attribute pos_vocab.
-#
-# get_input_representation(self, words, pos, state) takes as parameters a list of words in the input sentence, a list of POS tags in the input sentence and an instance of class State. It should return an encoding of the input to the neural network, i.e. a single vector.
-#
-# To represent a state, we will use the top-three words on the buffer and the next-three word on the stack, i.e. stack[-1], stack[-2], stack[-3] and buffer[-1], buffer[-2], buffer[-3]. We could use embedded representations for each word, but we would like the network to learn these representations itself. Therefore, the neural network will contain an embedding layer and the words will be represented as a one-hot representation. The actual input will be the concatenation of the one-hot vectors for each word.
-#
-# This would typically require a 6x|V| vector, but fortunately the keras embedding layer will accept integer indices as input and internally convert them. We therefore just need to return a vector (a 1-dimensional numpy array) of length 6.
-#
-# So for example, if the next words on the buffer are "dog eats a" and "the" and <ROOT> are on the stack , the return value should be a numpy array numpy.array([4047, 3, 4, 8346, 8995, 14774]). Here 4 is the index for the <NULL> symbol, 3 is the index for the <ROOT> symbol, 4047 is the index for "the" and 8346, 8995, 14774 are the indices for "dog", "eats" and "a". (Your indices may differ from this example because the get_vocab script outputs a different index mapping each time it is run.)
-#
-# Note that you need to account for the special symbols (<CD>,<NNP>,<UNK>,<ROOT>,<NULL>) in creating the input representation. Make sure you take into account states in which there are less than 3 words on the stack or buffer.
-#
-# This representation is a subset of the features in the Chen & Manning (2014) paper. Feel free to experiment with the complete feature set once you got the basic version running.
-#
-# TODO: Generating Input and Output matrices
-#
-# Write the method get_output_representation(self, output_pair), which should take a (transition, label) pair as its parameter and return a one-hot representation of these actions. Because there are 45*2+1 = 91 possible outputs, the output should be represented as a one-hot vector of length 91.
-#
-# Saving training matrices
-# The neural network will take two matrices as its input, a matrix of training data (in the basic case a N x 6 matrix, where N is the number of training instances) and an output matrix (an Nx91 matrix).
-#
-# The function get_training_matrices(extractor, in_file) will take a FeatureExtractor instance and a file object (a CoNLL formatted file) as its input. It will then extract state-transition sequences and call your input and output representation methods on each to obtain input and output vectors. Finally it will assemble the matrices and return them.
-#
-# The main program in extrac_training_data.py calls get_training_matrices to obtain the matrices and then writes them to two binary files (encoded in the numpy array binary format). You can call it like this:
-#
-# python extract_training_data.py data/train.conll data/input_train.npy data/target_train.npy
-#
-# You can also obtain matrices for the development set, which is useful to tune network parameters.
-#
-# python extract_training_data.py data/dev.conll data/input_dev.npy data/target_dev.npy
 
 
 from conll_reader import DependencyStructure, conll_reader
@@ -237,6 +192,7 @@ class FeatureExtractor(object):
                 for i in range(len(state.buffer), 3):
                     buffer_encoding[i] = self.word_vocab['<NULL>']
 
+        # convert encoding to int
         encoding = np.concatenate((stack_encoding, buffer_encoding)).astype(int)
         # print(encoding)
 
