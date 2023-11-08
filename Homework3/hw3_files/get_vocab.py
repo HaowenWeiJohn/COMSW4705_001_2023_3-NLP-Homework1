@@ -32,7 +32,7 @@ def get_vocabularies(conll_reader):
 
 if __name__ == "__main__":
     import os
-    repo_path = 'D:\HaowenWei\Rena\COMSW4705_001_2023_3-NLP-Homework1'
+    repo_path = 'C:/Users/HaowenJohnWei/PycharmProjects/COMSW4705_001_2023_3-NLP-Homework1'
     train_conll = os.path.join(repo_path,'Homework3/hw3_files/data/train.conll')
     words_vocab = os.path.join(repo_path,'Homework3/hw3_files/data/words.vocab')
     pos_vocab = os.path.join(repo_path,'Homework3/hw3_files/data/pos.vocab')
