@@ -2,7 +2,7 @@
 import sys
 
 from lexsub_xml import read_lexsub_xml
-from lexsub_xml import Context 
+from lexsub_xml import Context
 
 # suggested imports 
 from nltk.corpus import wordnet as wn
@@ -12,20 +12,21 @@ import numpy as np
 import tensorflow
 
 import gensim
-import transformers 
+import transformers
 
 from typing import List
 
-def tokenize(s): 
+
+def tokenize(s):
     """
-    a naive tokenizer that splits on punctuation and whitespaces.  
+    a naive tokenizer that splits on punctuation and whitespaces.
     """
     string = s.replace("-", " ")
-    s = "".join(" " if x in string.punctuation else x for x in s.lower())    
-    return s.split() 
+    s = "".join(" " if x in string.punctuation else x for x in s.lower())
+    return s.split()
+
 
 def get_candidates(lemma, pos) -> List[str]:
-    # Part 1
     # Part 1
     candidates = set()
     for l in wn.lemmas(lemma, pos):
@@ -38,13 +39,15 @@ def get_candidates(lemma, pos) -> List[str]:
 
     return candidates
 
-def smurf_predictor(context : Context) -> str:
+
+def smurf_predictor(context: Context) -> str:
     """
     suggest 'smurf' as a substitute for all words.
     """
     return 'smurf'
 
-def wn_frequency_predictor(context : Context) -> str:
+
+def wn_frequency_predictor(context: Context) -> str:
     target_synsets = wn.synsets(context.lemma, context.pos)
 
 
@@ -61,31 +64,40 @@ def wn_frequency_predictor(context : Context) -> str:
 
     # find the most frequent lemma
     most_frequent_lemma = max(frequency_counter, key=frequency_counter.get)
-    return most_frequent_lemma # replace for part 2
+    return most_frequent_lemma
 
-def wn_simple_lesk_predictor(context : Context) -> str:
-    return None #replace for part 3        
-   
+
+
+
+    # Part 2
+
+
+
+    return None  # replace for part 2
+
+
+def wn_simple_lesk_predictor(context: Context) -> str:
+    return None  # replace for part 3
+
 
 class Word2VecSubst(object):
-        
-    def __init__(self, filename):
-        self.model = gensim.models.KeyedVectors.load_word2vec_format(filename, binary=True)    
 
-    def predict_nearest(self,context : Context) -> str:
-        return None # replace for part 4
+    def __init__(self, filename):
+        self.model = gensim.models.KeyedVectors.load_word2vec_format(filename, binary=True)
+
+    def predict_nearest(self, context: Context) -> str:
+        return None  # replace for part 4
 
 
 class BertPredictor(object):
 
-    def __init__(self): 
+    def __init__(self):
         self.tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
         self.model = transformers.TFDistilBertForMaskedLM.from_pretrained('distilbert-base-uncased')
 
-    def predict(self, context : Context) -> str:
-        return None # replace for part 5
+    def predict(self, context: Context) -> str:
+        return None  # replace for part 5
 
-    
 
 if __name__=="__main__":
 
@@ -93,8 +105,15 @@ if __name__=="__main__":
 
     #W2VMODEL_FILENAME = 'GoogleNews-vectors-negative300.bin.gz'
     #predictor = Word2VecSubst(W2VMODEL_FILENAME)
-
-    for context in read_lexsub_xml(sys.argv[1]):
+    for context in read_lexsub_xml('lexsub_trial.xml'):
+    # for context in read_lexsub_xml(sys.argv[1]):
         #print(context)  # useful for debugging
-        prediction = smurf_predictor(context) 
+        prediction = wn_frequency_predictor(context)
         print("{}.{} {} :: {}".format(context.lemma, context.pos, context.cid, prediction))
+
+# if __name__ == '__main__':
+#     # Part 1 - get_candidates
+#     test_candidates = get_candidates('slow', 'a')
+#     print(test_candidates)
+#
+#     # Part 2 - wn_frequency_predictor
