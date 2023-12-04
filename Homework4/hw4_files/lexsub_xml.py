@@ -71,6 +71,6 @@ def read_lexsub_xml(*sources):
     
 if __name__=="__main__":
 
-    for context in read_lexsub_xml(sys.argv[1]):
+    for context in read_lexsub_xml('lexsub_trial.xml'):
         print(context)
 
