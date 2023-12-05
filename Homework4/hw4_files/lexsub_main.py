@@ -176,12 +176,21 @@ class BertPredictor(object):
 
 
 class CustomPredictor:
+    # This is Part 6 of the assignment
     def __init__(self, filename):
         self.model = gensim.models.KeyedVectors.load_word2vec_format(filename, binary=True)
 
     def predict_nearest(self,context : Context) -> str:
+        # here is the approach:
+        # 1. get the synsets of the target word
+        # 2. for each synset, get the vector sum of all the words in the synset, excluding the target word
+        # 3. get the vector of the target word
+        # 4. calculate the similarity between the target word and the synset vector sum
+        # 5. get the highest score synset
+        # 6. get the word that has the highest score in the synset which closest to the target word
+        # In general, this approach is a average of the synset's words' vectors, and then calculate the similarity between the target word and the synset vector sum
+        # Then we select the word that has the highest score in the synset which closest to the target word
 
-        # here is the approch, we first get the candidates,
         synset_vector_dict = {}
 
 
@@ -276,6 +285,7 @@ class CustomPredictor:
 #
 #         print("{}.{} {} :: {}".format(context.lemma, context.pos, context.cid, prediction))
 #
+
 #     # Total = 298, attempted = 298
 #     # precision = 0.074, recall = 0.074
 #     # Total with mode 206 attempted 206
@@ -376,5 +386,9 @@ if __name__=="__main__":
 
         print("{}.{} {} :: {}".format(context.lemma, context.pos, context.cid, prediction))
 
+# Total = 298, attempted = 298
+# precision = 0.105, recall = 0.105
+# Total with mode 206 attempted 206
+# precision = 0.155, recall = 0.155
 
 
